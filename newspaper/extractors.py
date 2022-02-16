@@ -633,6 +633,7 @@ class ContentExtractor(object):
         cnn.com --> [cnn.com/latest, world.cnn.com, cnn.com/asia]
         """
         page_urls = self.get_urls(doc)
+        page_urls = set(page_urls)
         valid_categories = []
         for p_url in page_urls:
             scheme = urls.get_scheme(p_url, allow_fragments=False)
@@ -681,9 +682,29 @@ class ContentExtractor(object):
                                'subdomain' % p_url))
                     continue
                 else:
-                    valid_categories.append(scheme + '://' + domain)
-                    # TODO account for case where category is in form
+                    # TODO->DONE account for case where category is in form
                     # http://subdomain.domain.tld/category/ <-- still legal!
+                    path_chunks = [x for x in path.split('/') if len(x) > 0]
+                    if 'index.html' in path_chunks:
+                        path_chunks.remove('index.html')
+
+                    flag_it = 1
+                    #If firt or any of the 3 sub-paths is less than 25 chars 
+                    if (len(path_chunks) == 1 and len(path_chunks[0]) < 25) or (len(path_chunks) < 4):
+                        for i in path_chunks:
+                            if len(i)< 25:
+                                pass
+                            else:
+                                if self.config.verbose:
+                                    print("Skip the URL as its sub-path is > than 25 chars: " + path)
+                                flag_it = 0
+                                break
+
+                    if flag_it:
+                        valid_categories.append(scheme+ "://" + domain + path)
+                    else:
+                        valid_categories.append(scheme + '://' + domain)
+
             else:
                 # we want a path with just one subdir
                 # cnn.com/world and cnn.com/world/ are both valid_categories
@@ -691,12 +712,25 @@ class ContentExtractor(object):
                 if 'index.html' in path_chunks:
                     path_chunks.remove('index.html')
 
-                if len(path_chunks) == 1 and len(path_chunks[0]) < 14:
-                    valid_categories.append(domain + path)
+                flag_it = 1
+                if (len(path_chunks) == 1 and len(path_chunks[0]) < 25) or (len(path_chunks) < 4):
+                    for i in path_chunks:
+                        if len(i)< 25:
+                            pass
+                        else:
+                            if self.config.verbose:
+                                print("Skip the URL as its > 25 chars: "+path)
+                            flag_it = 0
+                            break
+
                 else:
                     if self.config.verbose:
                         print(('elim category url %s for >1 path chunks '
                                'or size path chunks' % p_url))
+
+                if flag_it:
+                    valid_categories.append(domain + path)
+
         stopwords = [
             'about', 'help', 'privacy', 'legal', 'feedback', 'sitemap',
             'profile', 'account', 'mobile', 'sitemap', 'facebook', 'myspace',

@@ -25,11 +25,16 @@ DATE_REGEX = r'([\./\-_]{0,1}(19|20)\d{2})[\./\-_]{0,1}(([0-3]{0,1}[0-9][\./\-_]
 STRICT_DATE_REGEX = _STRICT_DATE_REGEX_PREFIX + DATE_REGEX
 
 ALLOWED_TYPES = ['html', 'htm', 'md', 'rst', 'aspx', 'jsp', 'rhtml', 'cgi',
-                 'xhtml', 'jhtml', 'asp', 'shtml']
+                 'xhtml', 'jhtml', 'asp', 'shtml', 'php']
 
-GOOD_PATHS = ['story', 'article', 'feature', 'featured', 'slides',
-              'slideshow', 'gallery', 'news', 'video', 'media',
-              'v', 'radio', 'press']
+GOOD_PATHS = ['story', 'stories', 'articles', 'article', 'feature', 'featured', 'slides',
+              'slideshow', 'gallery', 'news', 'video', 'media', 'news-posts',
+              'v', 'radio', 'press', 'topics', 'do', 'blog', 'blog-posts', 'news-mainmenu',
+              'national-news', 'all-news', 'post', 'posts',
+              'news-blogs', 'pasienthistorier', 'patient-stories', 'verhalen',
+              'better-samaritan', 'specialty', 'blogs', 'how-to',
+              'editorial', 'releases', 'content', 'fishing', 'rifles',
+              'product-profile', 'gear', 'whitetail-deer', 'hunting']
 
 BAD_CHUNKS = ['careers', 'contact', 'about', 'faq', 'terms', 'privacy',
               'advert', 'preferences', 'feedback', 'info', 'browse', 'howto',
@@ -199,7 +204,7 @@ def valid_url(url, verbose=False, test=False):
         underscore_count = url_slug.count('_')
 
     # If the url has a news slug title
-    if url_slug and (dash_count > 4 or underscore_count > 4):
+    if url_slug and (dash_count > 3 or underscore_count > 3):
 
         if dash_count >= underscore_count:
             if tld not in [x.lower() for x in url_slug.split('-')]:

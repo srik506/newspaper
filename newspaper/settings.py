@@ -30,9 +30,9 @@ STOPWORDS_DIR = os.path.join(PARENT_DIRECTORY, 'resources/text')
 NLP_STOPWORDS_EN = os.path.join(
     PARENT_DIRECTORY, 'resources/misc/stopwords-nlp-en.txt')
 
-DATA_DIRECTORY = '.newspaper_scraper'
+DATA_DIRECTORY = 'newspaper_scraper'
 
-TOP_DIRECTORY = os.path.join(tempfile.gettempdir(), DATA_DIRECTORY)
+TOP_DIRECTORY = os.path.join('/etc/online_news', DATA_DIRECTORY)
 
 # Error log
 LOGFILE = os.path.join(TOP_DIRECTORY, 'newspaper_errors_%s.log' % __version__)
